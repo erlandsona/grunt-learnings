@@ -3,14 +3,11 @@
 
 module.exports = function (grunt) {
 
-  // Load the plugin that provides the "copy" task.
-  grunt.loadNpmTasks('grunt-contrib-copy');
-
-  // Load the plugin that provides the "jade compile" task.
-  grunt.loadNpmTasks('grunt-contrib-jade');
+  require('load-grunt-tasks')(grunt);
 
   // Project configuration.
   grunt.initConfig({
+    clean: ['public'],
     copy: {
       main: {
         files: [
@@ -29,5 +26,5 @@ module.exports = function (grunt) {
 
   // Default task(s).
   grunt.registerTask('default', []);
-  grunt.registerTask('build', ['copy', 'jade']);
+  grunt.registerTask('build', ['clean', 'copy', 'jade']);
 };
