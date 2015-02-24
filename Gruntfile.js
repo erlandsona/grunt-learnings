@@ -50,7 +50,7 @@ module.exports = function (grunt) {
 
     connect: {
       options: {
-        port: 8888,
+        port: 7777,
         open: true,
         useAvailablePort: true,
         hostname: 'localhost'
