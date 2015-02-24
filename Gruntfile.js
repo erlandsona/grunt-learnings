@@ -20,8 +20,31 @@ module.exports = function (grunt) {
     copy: {
       main: {
         files: [
-          {expand: true, cwd: 'app/', src: ['**', '!**/*.jade', '!**/*.{sass,scss}'], dest: 'public/', filter: 'isFile'}
+          {
+            expand: true,
+            cwd: 'app/',
+            src: [
+              '**',
+              '!**/*.jade',
+              '!**/*.{sass,scss}',
+              '!**/*.js'
+            ],
+            dest: 'public/',
+            filter: 'isFile'
+          }
         ]
+      }
+    },
+
+    concat: {
+      iife: {
+        options: {
+          banner: ';(function(){',
+          footer: '}());'
+        },
+
+        src: ['public/js/main.min.js'],
+        dest: 'public/js/main.min.js'
       }
     },
 
@@ -35,6 +58,8 @@ module.exports = function (grunt) {
 
       server: {
         options: {
+          livereload: true,
+
           middleware: function (connect) {
             return [
               connect.static('public'),
@@ -83,6 +108,20 @@ module.exports = function (grunt) {
         files: ['bower.json'],
         tasks: ['wiredep']
       },
+
+      livereload: {
+        options: {
+          livereload: true
+        },
+
+        files: [
+          'public/**/*.html',
+          'public/css/**/*.css',
+          'public/js/**/*.js',
+          'app/scripts/**/*.js'
+        ]
+      },
+
       other: {
         files: ['app/**', '!app/**/*.jade', '!app/**/*.{sass,scss}'],
         tasks: ['copy']
@@ -105,12 +144,22 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('default', []);
-  grunt.registerTask('build', ['clean', 'copy', 'jade', 'sass', 'autoprefixer', 'wiredep']);
-  grunt.registerTask('serve', ['build', 'connect', 'watch']);
+  grunt.registerTask('build', ['setup', 'combineJs']);
+  grunt.registerTask('serve', ['setup', 'connect', 'watch']);
+  grunt.registerTask('setup', [
+    'clean',
+    'copy',
+    'jade',
+    'sass',
+    'autoprefixer',
+    'wiredep'
+  ]);
   grunt.registerTask('combineJs', [
-    'wiredep',
     'useminPrepare',
     'concat:generated',
-    'uglify:generated'
+    'uglify:generated',
+    'usemin',
+    'concat:iife',
+    'clean:temp'
   ]);
 };
