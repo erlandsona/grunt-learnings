@@ -29,12 +29,33 @@ module.exports = function (grunt) {
           'public/css/main.css': 'app/styles/main.scss'
         }
       }
+    },
+    autoprefixer: {
+      options: {
+        browsers: ['last 2 versions', 'ie 8', 'ie 9']
+      },
+      build: {
+        src: 'public/css/**/*.css', // -> src/css/file1.css, src/css/file2.css
+      }
+    },
+    watch: {
+      other: {
+        files: ['app/**', '!app/**/*.jade', '!app/**/*.{sass,scss}'],
+        tasks: ['copy']
+      },
+      jade: {
+        files: ['app/**/*.jade'],
+        tasks: ['jade']
+      },
+      sass: {
+        files: ['app/styles/*.{sass,scss}'],
+        tasks: ['sass', 'autoprefixer']
+      }
     }
   });
 
-
-
   // Default task(s).
+  grunt.registerTask('build', ['clean', 'copy', 'jade', 'sass', 'autoprefixer']);
+  grunt.registerTask('see', ['build', 'watch']);
   grunt.registerTask('default', []);
-  grunt.registerTask('build', ['clean', 'copy', 'jade', 'sass']);
 };
